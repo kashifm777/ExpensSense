@@ -1,0 +1,33 @@
+{% extends 'tracker/base.html' %}
+{% block content %}
+<h2>Expense Dashboard</h2>
+<table class="table">
+    <thead><tr><th>Image</th><th>Amount</th><th>Category</th><th>Date</th></tr></thead>
+    <tbody>
+        {% for expense in expenses %}
+        <tr>
+            <td><img src="{{ expense.image.url }}" width="100"></td>
+            <td>${{ expense.amount }}</td>
+            <td>{{ expense.category }}</td>
+            <td>{{ expense.date_added }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3>Spending by Category</h3>
+<canvas id="categoryChart" width="400" height="200"></canvas>
+<script>
+    const ctx = document.getElementById('categoryChart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: [{% for ct in category_totals %}'{{ ct.category }}',{% endfor %}],
+            datasets: [{
+                data: [{% for ct in category_totals %}{{ ct.total }},{% endfor %}],
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
+            }]
+        }
+    });
+</script>
+{% endblock %}
